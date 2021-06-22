@@ -29,7 +29,7 @@ This would mean that the secondary recommendation function will take plant_B and
 so that Plant_B will also have 3 recommendations. 
 
 The reason behind the secondary recommendation code, is due to the lack of algorithm complexity that was prior to it. I had hoped that with this added, the possibility to grow the program
-would be possible but just requires more finetuning and manual labor, however it seems to be a possibility regardless!
+would be possible but just requires more finetuning and manual labor.
 
 ## Application
 
@@ -41,6 +41,10 @@ What is also noteworthy, is that the code will also visualize cubes surrounding 
 Along the same principle we get another color that will show us the secondary recommendation that will embody the recommended plants for the initial recommendations.
 
 The grid has been structured in a way that will not allow excess cubes be transfered if the horziontal or vertical limit has been reached.
+
+## Conclusion
+
+In hindsight I realised that much of the initial idea for this project has been considered obsolete. I have been struggling figuring out what the best approach is to my customer's problem and in what manner I can hope to achieve a clear and transparant structure, should others wish to evolve the algorithm/application. To give an example, at first I had not thought about creating a algorithm that will fill every recommendation column at the click of one button, instead of having a user input fill one specific cube within a column. Wether it would have been a better idea, it did allow me to critically think about my problemsolving. This project has made me reflect in both technical ways as well as overall learning how to proprely approach a project on this specific scale.
 
 
 
