@@ -1,0 +1,35 @@
+name,type,water,bloom_time,soil,sunlight,nutrient_bestowement,toxicity
+Potato,Herb,Average,"Spring, Summer",Neutral,Full,Relinquish,None
+Cucumber,"Herb, Vine",Average,"Summer, Autumn",Acidic,Full,Receive,None
+Okra,"Herb, Subshrub",High,Summer,Neutral,Full,Relinquish,None
+Carnation,Herb,Average,"Summer, Spring",Neutral,Average,Receive,None
+Peruvian_lily,Herb,Low,Summer,Neutral,Full,Relinquish,Low
+Oleander,Shrub,Average,"Summer, Autumn",Neutral,Full,Relinquish,High
+Peach,Tree,Average,Spring,Acidic,Full,Relinquish,None
+Tomato,Herb,High,"Summer, Autumn",Neutral,Full,Relinquish,None
+Lemon,Tree,Average,"Spring, Summer",Neutral,Full,Receive,None
+Southern_magnolia,Tree,Low,"Spring, Summer",Acidic,Full,Relinquish,None
+Cherry_plum,Tree,Average,Spring,Neutral,Full,Receive,None
+Olive,Tree,Average,Spring,Neutral,Full,Relinquish,None
+plant_14,Tree,Average,"Spring, Summer",Neutral,Average,Relinquish,High
+plant_15,Herb,High,Summer,Neutral,Low,Relinquish,High
+plant_16,Herb,High,"Autumn, Spring",Neutral,Low,Relinquish,High
+plant_17,Herb,Low,Summer,Neutral,Average,Receive,High
+plant_18,Herb,Average,Summer,Neutral,Full,Relinquish,None
+plant_19,Herb,Low,Spring,Neutral,Full,Relinquish,None
+plant_20,Herb,Average,"Spring, Summer",Neutral,Average,Relinquish,None
+plant_21,Herb,Average,Spring,Acidic,Full,Receive,None
+plant_22,Herb,Average,Summer,Neutral,Full,Relinquish,None
+plant_23,Herb,High,Spring,Neutral,Full,Relinquish,None
+plant_24,Tree,Average,"Spring, Summer",Neutral,Average,Relinquish,None
+plant_25,Tree,High,"Spring, Summer",Neutral,Low,Relinquish,None
+plant_26,Herb,Low,Spring,Acidic,Full,Relinquish,Medium
+plant_27,Herb,Low,Summer,Neutral,Full,Relinquish,None
+plant_28,Herb,Low,"Autumn, Spring",Neutral,Low,Relinquish,None
+plant_29,Herb,Average,Summer,Neutral,Full,Relinquish,Low
+plant_30,Tree,Average,"Spring, Summer",Neutral,Low,Receive,None
+plant_31,Tree,High,Spring,Neutral,Full,Relinquish,None
+plant_32,Herb,High,"Autumn, Spring",Acidic,Low,Relinquish,None
+plant_33,Herb,Average,Summer,Neutral,Full,Relinquish,None
+plant_34,Herb,Low,"Spring, Summer",Acidic,Full,Relinquish,Medium
+plant_35,Herb,Average,"Autumn, Spring",Acidic,Full,Relinquish,Low
