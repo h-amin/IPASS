@@ -1,8 +1,7 @@
 import csv
 import psycopg2
 
-global primary_question
-global secondary_start
+primary_question = input("Type the name of your desired main plant: ")
 
 
 # Establishing database access.
@@ -75,7 +74,6 @@ def main_characteristics():
     The main_characteristics function simply shows us the attributes of the prompted PRIMARY plant.
     It searches for key attributes and extracts the data through a simple SQL query, so in turn we get a list with
     the necessary information.
-    :return:
     """
     plant_names = lst_plant_names()
     plant_names_lst = []
@@ -87,11 +85,7 @@ def main_characteristics():
     # ---------- Main Loop ------------
     while True:
         try:
-            # The main input, the question that will determine
-            global primary_question
-            primary_question = input("Type the name of your desired main plant: ")
             if primary_question in plant_names_lst:
-                print("SUCCES. Your plant has been recognized.")
                 open_db_connection()
                 # Extracting the necessary attribute data in order to manipulate it afterwards.
                 cursor.execute("SELECT "
@@ -124,7 +118,6 @@ def recommendations():
     to the sum of plant_characteristics. (which is 150 total) The essence of this function is to reveal the plants that
     have the highest weighted value that correlates to the PRIMARY plant, in order to create a sorted list which
     in turn will allow us to see which plants are most suitable for recommendation.
-    :return:
     """
     open_db_connection()
     cursor.execute("SELECT COUNT(*) FROM plant_data;")
@@ -178,10 +171,10 @@ def recommendations():
             '''
 
             cursor.execute("SELECT DISTINCT type FROM plant_data WHERE plant_name = '{0}'".format(check_plant))
-            type_data = cursor.fetchall()   # Obtain data
+            type_data = cursor.fetchall()  # Obtain data
             type_values = []
             type_keys = []
-            [type_values.append(i[0]) for i in type_data]   # Remove brackets
+            [type_values.append(i[0]) for i in type_data]  # Remove brackets
             for type in type_values:
                 if type != p_type:
                     type_weight = 5
@@ -368,9 +361,15 @@ def recommendations():
     for j in range(len(myDict)):
         recommendations_lst.append(myDict[j][0])
 
+    if primary_question in recommendations_lst:
+        recommendations_lst.remove(primary_question)
+
     top_4 = recommendations_lst[:4]
 
     return top_4
+
+
+secondary_start = recommendations()[:1]
 
 
 def secondary_recommendations():
@@ -378,10 +377,7 @@ def secondary_recommendations():
     This function bases itself off the results of function: recommendations(). The code will take the initial Primary
     question, and find the highest key valued plant_name within the sorted list, and return it so that the same process
     can be used to ascertain what the top_3 most suitable plant combinations are for that specific recommended plant.
-    :return:
     """
-    global secondary_start
-    secondary_start = recommendations()[:1]
 
     result_lst = []
 
@@ -422,17 +418,11 @@ def secondary_recommendations():
         check_plant = lst_plant_names()[h][0]
         sum_values.append(check_plant)
         for i in range(len(result_lst)):
-            # key_lst = result_lst[i]
             s_type = result_lst[i][0]
             s_water_level = result_lst[i][1]
             s_soil = result_lst[i][2]
             s_sunlight = result_lst[i][3]
-            # s_bestowement = result_lst[i][4]
-            # s_toxicity = result_lst[i][5]
             s_bloom = result_lst[i][6]
-
-            # zip_iterator = zip(key_lst, weight_lst)
-            # secondary_plant_dict = dict(zip_iterator)
 
             open_db_connection()
 
@@ -620,14 +610,21 @@ def secondary_recommendations():
     myDict = sorted(total_sum_dict.items(), key=lambda x: x[1], reverse=True)
 
     recommendations_lst = []
-    if primary_question[0] in recommendations_lst:
-        recommendations_lst.remove(primary_question[0])
+
+    top_4 = recommendations()[:4]
 
     for j in range(len(myDict)):
         recommendations_lst.append(myDict[j][0])
 
+    for y in range(len(top_4)):
+        if top_4[y] in recommendations_lst:
+            recommendations_lst.remove(top_4[y])
+        elif primary_question in recommendations_lst:
+            recommendations_lst.remove(primary_question)
+        elif secondary_start in recommendations_lst:
+            recommendations_lst.remove(secondary_start)
+
     top_3 = recommendations_lst[:3]
-    print(top_3)
     return top_3
 
 
@@ -636,7 +633,6 @@ def add_recommendations_column():
     Function to create two extra columns by the name of primary and secondary recommendations, seen as how
     the initial create_table function did not include these columns. This is done consciously, as the csv.file does not
     have a recommendation column as one would expect from a mock botanical database.
-    :return:
     """
     open_db_connection()
     add_column = "ALTER TABLE plant_data ADD primary_recommendations varchar"
@@ -646,12 +642,11 @@ def add_recommendations_column():
     close_db_connection()
 
 
-def fill_primary_recommendations_column():
+def fill_recommendations_column():
     """
     This function will allow the top 4 plants that have been identified with usage of the recommendations() function,
     to be saved within the data under the primary_recommendations tab. The function will work for every plant that the
     user decides to fill when prompted.
-    :return:
     """
     top_4 = recommendations()
     p_first_string = top_4[0]
@@ -660,45 +655,23 @@ def fill_primary_recommendations_column():
     p_fourth_string = top_4[3]
     p_full_string = p_first_string + ', ' + p_second_string + ', ' + p_third_string + ', ' + p_fourth_string
 
-    for i in range(len(lst_plant_names())):
-        open_db_connection()
-        query = "UPDATE plant_data " \
-                "SET primary_recommendations = '{0}'," \
-                "secondary_recommendations = '{1}'" \
-                "WHERE plant_name = '{1}'".format(p_full_string, primary_question[0])
-        cursor.execute(query)
-        close_db_connection()
-
-
-def fill_secondary_recommendations_column():
-    """
-    This Function is in almost every aspect identical to the fill_primary_recommendations function, seen as how it
-    saves the top_3 product from the secondary_recommendations function. However a note to mention is that the secondary
-    recommendation will be saved in the same row as the prompted 'SECONDARY START' global variable. This means that
-    if a user types in plant_A as primary plant, and the results are for example: [plant_c, plant_f, plant_q, plant_h]
-    the top_3 plants to be recommended will show up in the same row that plant_c resides.
-    :return:
-    """
     top_3 = secondary_recommendations()
     s_first_string = top_3[0]
     s_second_string = top_3[1]
     s_third_string = top_3[2]
     s_full_string = s_first_string + ', ' + s_second_string + ', ' + s_third_string
 
-    for i in range(len(lst_plant_names())):
-        open_db_connection()
-        query = "UPDATE plant_data " \
-                "SET secondary_recommendations = '{0}'" \
-                "WHERE plant_name = '{1}'".format(s_full_string, secondary_start[0])
-        cursor.execute(query)
-        close_db_connection()
+    open_db_connection()
+    query = "UPDATE plant_data " \
+            "SET primary_recommendations = '{0}'," \
+            "secondary_recommendations = '{1}'" \
+            "WHERE plant_name = '{2}'".format(p_full_string, s_full_string, primary_question)
+    cursor.execute(query)
+    close_db_connection()
 
 
+# Function to establish and create the database as well as fill in the csv.file into the designated columns/rows.
 def fill_table():
-    """
-    Function to establish and create the database as well as fill in the csv.file into the designated columns/rows.
-    :return:
-    """
     open_db_connection()
     create_table_plant_data()
     insert_csv_data()

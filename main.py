@@ -8,5 +8,4 @@ import algorithm
 # algorithm.recommendations()
 # algorithm.secondary_recommendations()
 
-algorithm.fill_primary_recommendations_column()
-# algorithm.fill_secondary_recommendations_column()
+algorithm.fill_recommendations_column()
