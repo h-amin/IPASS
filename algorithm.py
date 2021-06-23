@@ -1,7 +1,15 @@
 import csv
 import psycopg2
 
-primary_question = input("Type the name of your desired main plant: ")
+# User input statement.
+while True:
+    try:
+        primary_question = input("Type the name of your desired main plant: ")
+    except ValueError:
+        print("Sorry, I did not understand that.")
+        continue
+    else:
+        break
 
 
 # Establishing database access.
@@ -36,9 +44,6 @@ def close_db_connection():
 def create_table_plant_data():
     create_table = "CREATE TABLE IF NOT EXISTS plant_data (" \
                    "plant_name varchar PRIMARY KEY," \
-                   "genus varchar," \
-                   "family varchar, " \
-                   "class varchar, " \
                    "type varchar, " \
                    "water varchar, " \
                    "bloom_time varchar, " \
@@ -57,7 +62,7 @@ def insert_csv_data():
         next(reader)
         for row in reader:
             cursor.execute(
-                "INSERT INTO plant_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", row)
+                "INSERT INTO plant_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", row)
 
 
 # Small SQL-query to extract and retrieve all plant_names within the database
@@ -82,33 +87,22 @@ def main_characteristics():
     # Removing redundant parentheses and unused clutter.
     [plant_names_lst.append(i[0]) for i in plant_names]
 
-    # ---------- Main Loop ------------
-    while True:
-        try:
-            if primary_question in plant_names_lst:
-                open_db_connection()
-                # Extracting the necessary attribute data in order to manipulate it afterwards.
-                cursor.execute("SELECT "
-                               "type, "
-                               "water, "
-                               "soil, "
-                               "sunlight, "
-                               "nutrient_bestowement, "
-                               "toxicity, "
-                               "bloom_time "
-                               "FROM plant_data WHERE plant_name = '{0}'".format(primary_question))
-                result = cursor.fetchone()
-                close_db_connection()
-                result_lst.append(result)
-                break
+    if primary_question in plant_names_lst:
+        open_db_connection()
+        # Extracting the necessary attribute data in order to manipulate it afterwards.
+        cursor.execute("SELECT "
+                       "type, "
+                       "water, "
+                       "soil, "
+                       "sunlight, "
+                       "nutrient_bestowement, "
+                       "toxicity, "
+                       "bloom_time "
+                       "FROM plant_data WHERE plant_name = '{0}'".format(primary_question))
+        result = cursor.fetchone()
+        close_db_connection()
+        result_lst.append(result)
 
-            else:
-                print("ERROR. wrong value")
-                continue
-
-        except ValueError:
-            print("Sorry, I did not understand that.")
-            continue
     return result_lst
 
 
@@ -119,11 +113,6 @@ def recommendations():
     have the highest weighted value that correlates to the PRIMARY plant, in order to create a sorted list which
     in turn will allow us to see which plants are most suitable for recommendation.
     """
-    open_db_connection()
-    cursor.execute("SELECT COUNT(*) FROM plant_data;")
-    records_data = cursor.fetchall()
-    records = records_data[0][0]
-    close_db_connection()
 
     plant_characteristics = main_characteristics()
     weight_lst = []
@@ -184,7 +173,6 @@ def recommendations():
                     type_keys.append(type_weight)
             zip_iterator = zip(type_values, type_keys)
             type_dict = dict(zip_iterator)
-            # print(type_dict)
 
             ''' 
             You primarily want the water level to be the same as your primary plant water attribute,
@@ -211,7 +199,6 @@ def recommendations():
                     water_keys.append(water_weight)
             zip_iterator = zip(water_values, water_keys)
             water_dict = dict(zip_iterator)
-            # print(water_dict)
 
             '''
             The soil will always want to be the same as the other plant attributes, an difference in botanic habitat
@@ -231,7 +218,6 @@ def recommendations():
                     soil_keys.append(soil_weight)
             zip_iterator = zip(soil_values, soil_keys)
             soil_dict = dict(zip_iterator)
-            # print(soil_dict)
 
             '''
             For most plants, sunlight is crucial to their development, however in some cases, having an overdose of sunlight,
@@ -259,7 +245,6 @@ def recommendations():
                     sunlight_keys.append(sunlight_weight)
             zip_iterator = zip(sunlight_values, sunlight_keys)
             sunlight_dict = dict(zip_iterator)
-            # print(sunlight_dict)
 
             '''
             Nutrient bestowement is the second most important attribute for this algorithm, if a plant does not relinquish
@@ -282,7 +267,6 @@ def recommendations():
                     n_b_keys.append(n_b_weight)
             zip_iterator = zip(n_b_values, n_b_keys)
             n_b_dict = dict(zip_iterator)
-            # print(n_b_dict)
 
             '''
             Toxicity, just like nutrient bestowement is equally, if not the most important attribute of a plant that we need
@@ -311,7 +295,6 @@ def recommendations():
                     toxic_keys.append(toxic_weight)
             zip_iterator = zip(toxic_values, toxic_keys)
             toxic_dict = dict(zip_iterator)
-            # print(toxic_dict)
 
             '''
             Bloom time is quality of life extra. It would be most efficient and enjoyable to see your garden bloom
@@ -332,7 +315,6 @@ def recommendations():
                     bloom_keys.append(bloom_weight)
             zip_iterator = zip(bloom_values, bloom_keys)
             bloom_dict = dict(zip_iterator)
-            # print(bloom_dict)
 
             # Collecting the sum of these attribute weights
             dict_type_sum = sum(type_dict.values())
@@ -369,15 +351,14 @@ def recommendations():
     return top_4
 
 
-secondary_start = recommendations()[:1]
-
-
 def secondary_recommendations():
     """
     This function bases itself off the results of function: recommendations(). The code will take the initial Primary
     question, and find the highest key valued plant_name within the sorted list, and return it so that the same process
     can be used to ascertain what the top_3 most suitable plant combinations are for that specific recommended plant.
     """
+
+    secondary_start = recommendations()[:1]
 
     result_lst = []
 
@@ -661,13 +642,19 @@ def fill_recommendations_column():
     s_third_string = top_3[2]
     s_full_string = s_first_string + ', ' + s_second_string + ', ' + s_third_string
 
-    open_db_connection()
-    query = "UPDATE plant_data " \
-            "SET primary_recommendations = '{0}'," \
-            "secondary_recommendations = '{1}'" \
-            "WHERE plant_name = '{2}'".format(p_full_string, s_full_string, primary_question)
-    cursor.execute(query)
-    close_db_connection()
+    try:
+        open_db_connection()
+        query = "UPDATE plant_data " \
+                "SET primary_recommendations = '{0}'," \
+                "secondary_recommendations = '{1}'" \
+                "WHERE plant_name = '{2}'".format(p_full_string, s_full_string, primary_question)
+        cursor.execute(query)
+        print('SUCCES. the recommendations have been inserted for the plant', primary_question)
+        close_db_connection()
+    except ValueError:
+        print('ERROR. database is unable to retrieve the recommendations')
+        print('The primary recommendations are: ', p_full_string)
+        print('The secondary recommendations are: ', s_full_string)
 
 
 # Function to establish and create the database as well as fill in the csv.file into the designated columns/rows.
