@@ -605,8 +605,8 @@ def secondary_recommendations():
         elif secondary_start in recommendations_lst:
             recommendations_lst.remove(secondary_start)
 
-    top_3 = recommendations_lst[:3]
-    return top_3
+    top_4 = recommendations_lst[:4]
+    return top_4
 
 
 def add_recommendations_column():
@@ -640,7 +640,8 @@ def fill_recommendations_column():
     s_first_string = top_3[0]
     s_second_string = top_3[1]
     s_third_string = top_3[2]
-    s_full_string = s_first_string + ', ' + s_second_string + ', ' + s_third_string
+    s_fourth_string = top_4[3]
+    s_full_string = s_first_string + ', ' + s_second_string + ', ' + s_third_string + ', ' + s_fourth_string
 
     try:
         open_db_connection()
@@ -650,11 +651,13 @@ def fill_recommendations_column():
                 "WHERE plant_name = '{2}'".format(p_full_string, s_full_string, primary_question)
         cursor.execute(query)
         print('SUCCES. the recommendations have been inserted for the plant', primary_question)
+        print('The primary recommendations are: ', p_full_string)
+        print('The secondary recommendations are: ', s_full_string)
         close_db_connection()
     except ValueError:
         print('ERROR. database is unable to retrieve the recommendations')
-        print('The primary recommendations are: ', p_full_string)
-        print('The secondary recommendations are: ', s_full_string)
+
+    return p_full_string, s_full_string
 
 
 # Function to establish and create the database as well as fill in the csv.file into the designated columns/rows.

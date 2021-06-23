@@ -1,4 +1,5 @@
 import algorithm
+import applicatie
 
 '''
 These are the three main functions that will create the database, add extra recommendation columns and fill the data
@@ -9,7 +10,7 @@ After having made the table + added extra recommendation columns, please comment
 # algorithm.fill_table()
 # algorithm.add_recommendations_column()
 algorithm.fill_recommendations_column()  # <-- This is the main function that will create recommendations based on the user_input
-
+# applicatie.application()
 '''
 The functions that are stated below are primarily used to gain insight on the functionalities of how the algorithm
 works and what the results are midway throughout the code.
