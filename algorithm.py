@@ -52,6 +52,7 @@ def create_table_plant_data():
 
 # SQL statement function that will insert the plants_data.csv file into the created table.
 def insert_csv_data():
+    # ! IMPORTANT ! --> Change this to the path where you have placed the plants.csv file.
     with open('C:/Users/hamed/Documents/plants_data.csv', 'r') as f:
         reader = csv.reader(f)
         next(reader)
