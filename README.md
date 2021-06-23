@@ -17,7 +17,7 @@ money.)** and collect the PRIMARY keys which is the plant_names and put it into 
 
 After the list has been created, the algorithm will compare the user input to the list of database plant_names and see wether or not the user input is actually a valid plant.
 When the input has been accepted it will go through a main_characteristics function that will show us the designated attributes of said user input.
-Once the attributes are extracted, the algorithm will proceed to give it a weighted value. This ranges from 1 to 40. The user input will always have a max weighted value of 150.
+Once the attributes are extracted, the algorithm will proceed to give it a weighted value. This ranges from 1 to 40. The collective user input sum of all important attributes will always have a max weighted value of 150.
 This means that the program will have to search through all records within the database and find other plant_names that have the lowest weighted delta in comparison to the user input.
 
 All of the above will be handled with a function called recommendations, that essentially does this process for us, and locates all the attribute weight scores and saves it within a dictionary.
